@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edu Points - Admin Dashboard</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f8f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2e8b57;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .logo-section {
+            text-align: center;
+        }
+        h1 {
+            color: #2e8b57;
+            margin-bottom: 0;
+        }
+        .subtitle {
+            color: #3a9c69;
+            font-size: 16px;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        .admin-title {
+            background-color: #2e8b57;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: #f0fff0;
+            border: 1px solid #ddd;
+            border-bottom: 1px solid #f0fff0;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"], 
+        input[type="url"],
+        input[type="file"],
+        select, 
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-item input {
+            margin-right: 5px;
+        }
+        button {
+            background-color: #2e8b57;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #3a9c69;
+        }
+        .article-list {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .article-list th, .article-list td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .article-list tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .article-list th {
+            background-color: #2e8b57;
+            color: white;
+            text-align: left;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .action-buttons button {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .action-buttons button.edit {
+            background-color: #3498db;
+        }
+        .action-buttons button.delete {
+            background-color: #e74c3c;
+        }
+        .ad-preview {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .ad-preview img {
+            max-height: 100px;
+        }
+        .current-ad {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .status-message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .status-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-section">
+                <h1>Edu Points</h1>
+                <p class="subtitle">Academic Compass</p>
+            </div>
+            <div class="admin-title">Admin Dashboard</div>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="articles">Articles Manager</div>
+            <div class="tab" data-tab="advertisement">Advertisement Manager</div>
+        </div>
+
+        <div class="status-message success" id="success-message"></div>
+        <div class="status-message error" id="error-message"></div>
+
+        <!-- Articles Manager Tab -->
+        <div class="tab-content active" id="articles-tab">
+            <h2>Manage Articles</h2>
+            
+            <form id="article-form">
+                <div class="form-group">
+                    <label for="article-title">Article Title:</label>
+                    <input type="text" id="article-title" required placeholder="Enter article title">
+                </div>
+                
+                <div class="form-group">
+                    <label for="article-link">Article Link:</label>
+                    <input type="url" id="article-link" required placeholder="https://www.eduhelp.lk/index.php/eh_encyclopedia_article/...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="article-subject">Subject:</label>
+                    <select id="article-subject" required>
+                        <option value="">Select Subject</option>
+                        <option value="සිංහල">සිංහල</option>
+                        <option value="ඉතිහාසය">ඉතිහාසය</option>
+                        <option value="ගණිතය">ගණිතය</option>
+                        <option value="විද්‍යාව">විද්‍යාව</option>
+                        <option value="ජීව විද්‍යාව">ජීව විද්‍යාව</option>
+                        <option value="භූගෝල විද්‍යාව">භූගෝල විද්‍යාව</option>
+                        <option value="English">English</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="article-language">Language:</label>
+                    <select id="article-language" required>
+                        <option value="">Select Language</option>
+                        <option value="සිංහල">සිංහල</option>
+                        <option value="දෙමළ">දෙමළ</option>
+                        <option value="ඉංග්‍රීසි">ඉංග්‍රීසි</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Age Groups:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="age-6-11" value="6-11">
+                            <label for="age-6-11">6-11</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="age-12-16" value="12-16">
+                            <label for="age-12-16">12-16</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="age-17-plus" value="17+">
+                            <label for="age-17-plus">17 and above</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <input type="hidden" id="article-id">
+                <button type="submit" id="save-article">Add Article</button>
+            </form>
+            
+            <h3>Current Articles</h3>
+            <table class="article-list">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Title</th>
+                        <th style="width: 15%;">Subject</th>
+                        <th style="width: 15%;">Language</th>
+                        <th style="width: 15%;">Age Groups</th>
+                        <th style="width: 30%;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="articles-table-body">
+                    <!-- Article rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Advertisement Manager Tab -->
+        <div class="tab-content" id="advertisement-tab">
+            <h2>Manage Advertisement</h2>
+            
+            <div class="current-ad">
+                <h3>Current Advertisement</h3>
+                <div class="ad-preview">
+                    <img id="current-ad-image" src="https://www.eduhelp.lk/wp-content/uploads/2025/03/Our-ad-01a.gif" alt="Current Advertisement">
+                </div>
+            </div>
+            
+            <form id="ad-form">
+                <div class="form-group">
+                    <label for="ad-image">Upload New Advertisement:</label>
+                    <input type="file" id="ad-image" accept="image/*,.gif">
+                </div>
+                
+                <div class="form-group">
+                    <label for="ad-alt">Alternative Text:</label>
+                    <input type="text" id="ad-alt" placeholder="Describe the advertisement">
+                </div>
+                
+                <div class="form-group">
+                    <label>New Advertisement Preview:</label>
+                    <div class="ad-preview">
+                        <img id="new-ad-preview" src="" alt="New Advertisement Preview" style="display: none;">
+                        <p id="no-preview" style="color: #777;">No new advertisement selected</p>
+                    </div>
+                </div>
+                
+                <button type="submit">Update Advertisement</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching Functionality
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.getAttribute('data-tab');
+                
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                document.getElementById(`${targetTab}-tab`).classList.add('active');
+            });
+        });
+        
+        // Article Management
+        const articleForm = document.getElementById('article-form');
+        const articlesTableBody = document.getElementById('articles-table-body');
+        const saveArticleBtn = document.getElementById('save-article');
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+        
+        // Sample articles data (this would be stored in a database in a real application)
+        let articlesData = [
+            {
+                id: 1,
+                title: "ශ්‍රී ලංකාවේ ප්‍රධාන ගංගා",
+                link: 'https://www.eduhelp.lk/index.php/eh_encyclopedia_article/27019/',
+                subject: "භූගෝල විද්‍යාව",
+                language: "සිංහල",
+                ageGroups: ["12-16"]
+            },
+            {
+                id: 2,
+                title: "පරිසර පද්ධති",
+                link: 'https://www.eduhelp.lk/index.php/eh_encyclopedia_article/27090/',
+                subject: "විද්‍යාව",
+                language: "සිංහල",
+                ageGroups: ["12-16"]
+            },
+            {
+                id: 3,
+                title: "ශාක ප්‍රජාව",
+                link: 'https://www.eduhelp.lk/index.php/eh_encyclopedia_article/27092/',
+                subject: "ජීව විද්‍යාව",
+                language: "සිංහල",
+                ageGroups: ["17+"]
+            },
+            {
+                id: 4,
+                title: "බ්‍රිතාන්‍ය පාලනය",
+                link: 'https://www.eduhelp.lk/index.php/eh_encyclopedia_article/27095/',
+                subject: "ඉතිහාසය",
+                language: "සිංහල",
+                ageGroups: ["17+"]
+            },
+            {
+                id: 5,
+                title: "ජල චක්‍රය",
+                link: 'https://www.eduhelp.lk/index.php/eh_encyclopedia_article/27097/',
+                subject: "භූගෝල විද්‍යාව",
+                language: "සිංහල",
+                ageGroups: ["6-11"]
+            },
+            {
+                id: 6,
+                title: "සෛලයේ ව්‍යුහය",
+                link: 'https://www.eduhelp.lk/index.php/eh_encyclopedia_article/27099/',
+                subject: "ජීව විද්‍යාව",
+                language: "සිංහල",
+                ageGroups: ["12-16"]
+            }
+        ];
+        
+        // Display all articles
+        function displayArticles() {
+            articlesTableBody.innerHTML = '';
+            
+            articlesData.forEach(article => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${article.title}</td>
+                    <td>${article.subject}</td>
+                    <td>${article.language}</td>
+                    <td>${article.ageGroups.join(', ')}</td>
+                    <td class="action-buttons">
+                        <button class="edit" onclick="editArticle(${article.id})">Edit</button>
+                        <button class="delete" onclick="deleteArticle(${article.id})">Delete</button>
+                        <button onclick="viewArticle('${article.link}')">View</button>
+                    </td>
+                `;
+                
+                articlesTableBody.appendChild(row);
+            });
+        }
+        
+        // Add or update article
+        articleForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const articleId = document.getElementById('article-id').value;
+            const title = document.getElementById('article-title').value;
+            const link = document.getElementById('article-link').value;
+            const subject = document.getElementById('article-subject').value;
+            const language = document.getElementById('article-language').value;
+            
+            // Get selected age groups
+            const ageGroups = [];
+            if (document.getElementById('age-6-11').checked) ageGroups.push('6-11');
+            if (document.getElementById('age-12-16').checked) ageGroups.push('12-16');
+            if (document.getElementById('age-17-plus').checked) ageGroups.push('17+');
+            
+            if (ageGroups.length === 0) {
+                showMessage('Please select at least one age group', 'error');
+                return;
+            }
+            
+            if (articleId) {
+                // Update existing article
+                const index = articlesData.findIndex(a => a.id == articleId);
+                if (index !== -1) {
+                    articlesData[index] = {
+                        ...articlesData[index],
+                        title,
+                        link,
+                        subject,
+                        language,
+                        ageGroups
+                    };
+                    showMessage('Article updated successfully', 'success');
+                }
+            } else {
+                // Add new article
+                const newId = articlesData.length > 0 ? Math.max(...articlesData.map(a => a.id)) + 1 : 1;
+                articlesData.push({
+                    id: newId,
+                    title,
+                    link,
+                    subject,
+                    language,
+                    ageGroups
+                });
+                showMessage('Article added successfully', 'success');
+            }
+            
+            resetArticleForm();
+            displayArticles();
+        });
+        
+        // Edit article
+        window.editArticle = function(id) {
+            const article = articlesData.find(a => a.id === id);
+            if (article) {
+                document.getElementById('article-id').value = article.id;
+                document.getElementById('article-title').value = article.title;
+                document.getElementById('article-link').value = article.link;
+                document.getElementById('article-subject').value = article.subject;
+                document.getElementById('article-language').value = article.language;
+                
+                // Reset checkboxes
+                document.getElementById('age-6-11').checked = false;
+                document.getElementById('age-12-16').checked = false;
+                document.getElementById('age-17-plus').checked = false;
+                
+                // Check appropriate age groups
+                article.ageGroups.forEach(age => {
+                    if (age === '6-11') document.getElementById('age-6-11').checked = true;
+                    if (age === '12-16') document.getElementById('age-12-16').checked = true;
+                    if (age === '17+') document.getElementById('age-17-plus').checked = true;
+                });
+                
+                saveArticleBtn.textContent = 'Update Article';
+                
+                // Scroll to form
+                articleForm.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+        
+        // Delete article
+        window.deleteArticle = function(id) {
+            if (confirm('Are you sure you want to delete this article?')) {
+                articlesData = articlesData.filter(a => a.id !== id);
+                displayArticles();
+                showMessage('Article deleted successfully', 'success');
+            }
+        };
+        
+        // View article
+        window.viewArticle = function(link) {
+            window.open(link, '_blank');
+        };
+        
+        // Reset article form
+        function resetArticleForm() {
+            document.getElementById('article-id').value = '';
+            document.getElementById('article-title').value = '';
+            document.getElementById('article-link').value = '';
+            document.getElementById('article-subject').value = '';
+            document.getElementById('article-language').value = '';
+            document.getElementById('age-6-11').checked = false;
+            document.getElementById('age-12-16').checked = false;
+            document.getElementById('age-17-plus').checked = false;
+            saveArticleBtn.textContent = 'Add Article';
+        }
+        
+        // Advertisement Management
+        const adForm = document.getElementById('ad-form');
+        const adImage = document.getElementById('ad-image');
+        const newAdPreview = document.getElementById('new-ad-preview');
+        const noPreview = document.getElementById('no-preview');
+        
+        // Show image preview when file is selected
+        adImage.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    newAdPreview.src = e.target.result;
+                    newAdPreview.style.display = 'block';
+                    noPreview.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                newAdPreview.style.display = 'none';
+                noPreview.style.display = 'block';
+            }
+        });
+        
+        // Update advertisement
+        adForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const file = adImage.files[0];
+            if (!file) {
+                showMessage('Please select an image file', 'error');
+                return;
+            }
+            
+            const altText = document.getElementById('ad-alt').value || 'Advertisement';
+            
+            // In a real application, you would upload the file to a server
+            // For this demo, we'll just update the current ad preview
+            document.getElementById('current-ad-image').src = URL.createObjectURL(file);
+            document.getElementById('current-ad-image').alt = altText;
+            
+            showMessage('Advertisement updated successfully', 'success');
+            
+            // Reset form
+            adForm.reset();
+            newAdPreview.style.display = 'none';
+            noPreview.style.display = 'block';
+        });
+        
+        // Show status message
+        function showMessage(message, type) {
+            const messageElement = type === 'success' ? successMessage : errorMessage;
+            messageElement.textContent = message;
+            messageElement.style.display = 'block';
+            
+            // Hide message after 3 seconds
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Initialize the page
+        displayArticles();
+    </script>
+</body>
+</html>
