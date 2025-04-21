@@ -257,22 +257,22 @@
         <div class="filter-bar">
             <input type="text" id="search-input" placeholder="මාතෘකා සොයන්න">
             <select id="subject-filter">
-                	<option value="">සියලුම විෂයයන්</option>
-					<option value="සිංහල">සිංහල</option>
-					<option value="යුරෝපා ඉතිහාසය">යුරෝපා ඉතිහාසය</option>
-					<option value="දේශපාලන විද්‍යාව">දේශපාලන විද්‍යාව</option>
-					<option value="භූගෝල විද්‍යාව">භූගෝල විද්‍යාව</option>
-					<option value="ආර්ථික විද්‍යාව">ආර්ථික විද්‍යාව</option>
-					<option value="ගෘහ ආර්ථික විද්‍යාව">ගෘහ ආර්ථික විද්‍යාව</option>
-					<option value="තර්ක ශාස්ත්‍රය">තර්ක ශාස්ත්‍රය</option>
-					<option value="ගිණුම්කරණය">ගිණුම්කරණය</option>
-					<option value="ව්‍යාපාර සංඛ්‍යානය">ව්‍යාපාර සංඛ්‍යානය</option>
-					<option value="කෘෂි විදයාව">කෘෂි විදයාව</option>
-					<option value="ගණිතය-උසස් පෙළ">ගණිතය-උසස් පෙළ</option>
-					<option value="සංයුක්ත ගණිතය">සංයුක්ත ගණිතය</option>
-					<option value="සන්නිවේදනය හා මාධ්‍ය අධ්‍ය්‍යනය">සන්නිවේදනය හා මාධ්‍ය අධ්‍ය්‍යනය</option>
-					<option value="තොරතුරු හා සන්නිවේදන තාක්ෂණය">තොරතුරු හා සන්නිවේදන තාක්ෂණය</option>
-					<option value="තාක්ෂණවේදය">තාක්ෂණවේදය</option>
+                <option value="">සියලුම විෂයයන්</option>
+                <option value="සිංහල">සිංහල</option>
+                <option value="යුරෝපා ඉතිහාසය">යුරෝපා ඉතිහාසය</option>
+                <option value="දේශපාලන විද්‍යාව">දේශපාලන විද්‍යාව</option>
+                <option value="භූගෝල විද්‍යාව">භූගෝල විද්‍යාව</option>
+                <option value="ආර්ථික විද්‍යාව">ආර්ථික විද්‍යාව</option>
+                <option value="ගෘහ ආර්ථික විද්‍යාව">ගෘහ ආර්ථික විද්‍යාව</option>
+                <option value="තර්ක ශාස්ත්‍රය">තර්ක ශාස්ත්‍රය</option>
+                <option value="ගිණුම්කරණය">ගිණුම්කරණය</option>
+                <option value="ව්‍යාපාර සංඛ්‍යානය">ව්‍යාපාර සංඛ්‍යානය</option>
+                <option value="කෘෂි විදයාව">කෘෂි විදයාව</option>
+                <option value="ගණිතය-උසස් පෙළ">ගණිතය-උසස් පෙළ</option>
+                <option value="සංයුක්ත ගණිතය">සංයුක්ත ගණිතය</option>
+                <option value="සන්නිවේදනය හා මාධ්‍ය අධ්‍ය්‍යනය">සන්නිවේදනය හා මාධ්‍ය අධ්‍ය්‍යනය</option>
+                <option value="තොරතුරු හා සන්නිවේදන තාක්ෂණය">තොරතුරු හා සන්නිවේදන තාක්ෂණය</option>
+                <option value="තාක්ෂණවේදය">තාක්ෂණවේදය</option>
             </select>
         </div>
         <ul class="article-list">
@@ -340,16 +340,24 @@
                     console.log('No data found in the database');
                 }
                 
-articlesData = data.map(item => {
-    console.log('Processing item:', item);
-    return {
-        title: item.topic ? item.topic.trim() : '',
-        link: item.link ? item.link.trim() : '',
-        subject: item.subject ? item.subject.trim() : '',
-        language: item.medium ? item.medium.trim() : '',
-        ageGroup: item.age ? item.age.trim() : ''
-    };
-});
+                articlesData = data.map(item => {
+                    console.log('Processing item:', item);
+                    return {
+                        title: item.topic ? item.topic.trim() : '',
+                        link: item.link ? item.link.trim() : '',
+                        subject: item.subject ? item.subject.trim() : '',
+                        language: item.medium ? item.medium.trim() : '',
+                        ageGroup: item.age ? item.age.trim() : ''
+                    };
+                });
+                
+                console.log('Processed data:', articlesData);
+                displayArticles(articlesData);
+            } catch (error) {
+                console.error("දත්ත ලබා ගැනීමේදී දෝෂයක්:", error);
+                articleList.innerHTML = '<li class="no-results">දත්ත ලබා ගැනීම අසාර්ථකයි. දෝෂය: ' + error.message + '</li>';
+            }
+        }
 
         // Display articles in the UI
         function displayArticles(articles) {
