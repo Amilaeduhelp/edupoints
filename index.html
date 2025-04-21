@@ -340,24 +340,16 @@
                     console.log('No data found in the database');
                 }
                 
-                articlesData = data.map(item => {
-                    console.log('Processing item:', item);
-                    return {
-                        title: item.topic,
-                        link: item.link,
-                        subject: item.subject,
-                        language: item.medium,
-                        ageGroup: item.age
-                    };
-                });
-                
-                console.log('Processed data:', articlesData);
-                displayArticles(articlesData);
-            } catch (error) {
-                console.error("දත්ත ලබා ගැනීමේදී දෝෂයක්:", error);
-                articleList.innerHTML = '<li class="no-results">දත්ත ලබා ගැනීම අසාර්ථකයි. දෝෂය: ' + error.message + '</li>';
-            }
-        }
+articlesData = data.map(item => {
+    console.log('Processing item:', item);
+    return {
+        title: item.topic ? item.topic.trim() : '',
+        link: item.link ? item.link.trim() : '',
+        subject: item.subject ? item.subject.trim() : '',
+        language: item.medium ? item.medium.trim() : '',
+        ageGroup: item.age ? item.age.trim() : ''
+    };
+});
 
         // Display articles in the UI
         function displayArticles(articles) {
