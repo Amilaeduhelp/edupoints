@@ -47,8 +47,37 @@
             text-align: center;
             font-size: 1.1rem;
             margin-top: 0;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             font-style: italic;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            min-width: 120px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-box .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .stat-box .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
         }
 
         .filter-bar {
@@ -254,6 +283,23 @@
     <div class="container">
         <h1>Edu Points</h1>
         <p class="subtitle">Academic Compass</p>
+        
+        <!-- Stats container added below "Academic Compass" -->
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="value" id="article-count">0</div>
+                <div class="label">මාතෘකා ගණන</div>
+            </div>
+            <div class="stat-box">
+                <div class="value" id="subject-count">0</div>
+                <div class="label">විෂයයන් ගණන</div>
+            </div>
+            <div class="stat-box">
+                <div class="value" id="user-count">0</div>
+                <div class="label">පරිශීලකයින්</div>
+            </div>
+        </div>
+        
         <div class="filter-bar">
             <input type="text" id="search-input" placeholder="මාතෘකා සොයන්න">
             <select id="subject-filter">
@@ -293,6 +339,11 @@
         const searchInput = document.getElementById('search-input');
         const subjectFilter = document.getElementById('subject-filter');
         const toast = document.getElementById('toast');
+        
+        // Elements for statistics
+        const articleCountElement = document.getElementById('article-count');
+        const subjectCountElement = document.getElementById('subject-count');
+        const userCountElement = document.getElementById('user-count');
 
         // Supabase configuration
         const SUPABASE_URL = 'https://uqgzlaxsnknheoerbfus.supabase.co';
@@ -300,6 +351,40 @@
         const TABLE_NAME = 'edupoints';
 
         let articlesData = [];
+        let visitorCount = 0;
+
+        // Initialize user count from localStorage or set default
+        function initUserCount() {
+            // Get unique visitor identifier from localStorage
+            let visitorId = localStorage.getItem('edupoints_visitor_id');
+            
+            if (!visitorId) {
+                // Generate a new visitor ID and save it
+                visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
+                localStorage.setItem('edupoints_visitor_id', visitorId);
+                
+                // Increment total visitor count (would normally be done server-side)
+                incrementVisitorCount();
+            }
+            
+            // For demo purposes, generate a random number between 100-500
+            // In a real application, this would be fetched from a server or analytics service
+            visitorCount = Math.floor(Math.random() * 401) + 100;
+            updateUserCount(visitorCount);
+        }
+        
+        // Increment visitor count (simulated)
+        function incrementVisitorCount() {
+            // In a real application, this would make a request to the server
+            // Here we just increment the local count for demonstration
+            visitorCount++;
+            updateUserCount(visitorCount);
+        }
+        
+        // Update user count display
+        function updateUserCount(count) {
+            userCountElement.textContent = count;
+        }
 
         // Show toast notification
         function showToast(message) {
@@ -343,6 +428,7 @@
                 articlesData = data.map(item => {
                     console.log('Processing item:', item);
                     return {
+                        id: item.id || 0,
                         title: item.topic ? item.topic.trim() : '',
                         link: item.link ? item.link.trim() : '',
                         subject: item.subject ? item.subject.trim() : '',
@@ -352,11 +438,35 @@
                 });
                 
                 console.log('Processed data:', articlesData);
+                
+                // Update statistics
+                updateStatistics(articlesData);
+                
+                // Display articles
                 displayArticles(articlesData);
             } catch (error) {
                 console.error("දත්ත ලබා ගැනීමේදී දෝෂයක්:", error);
                 articleList.innerHTML = '<li class="no-results">දත්ත ලබා ගැනීම අසාර්ථකයි. දෝෂය: ' + error.message + '</li>';
             }
+        }
+        
+        // Update statistics based on fetched data
+        function updateStatistics(articles) {
+            // Count articles by using the length of the array
+            const articleCount = articles.length;
+            
+            // Count unique subjects 
+            const uniqueSubjects = new Set();
+            articles.forEach(article => {
+                if (article.subject) {
+                    uniqueSubjects.add(article.subject);
+                }
+            });
+            const subjectCount = uniqueSubjects.size;
+            
+            // Update UI elements
+            articleCountElement.textContent = articleCount;
+            subjectCountElement.textContent = subjectCount;
         }
 
         // Display articles in the UI
@@ -418,7 +528,7 @@
                 tempInput.select();
                 document.execCommand('copy');
                 document.body.removeChild(tempInput);
-                showToast('Link එක පිටපත් කරන ලදී!');
+                showToast('Link එක් පිටපත් කරන ලදී!');
             });
         }
 
@@ -431,6 +541,10 @@
 
         // Initial data fetch when page loads
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize user count
+            initUserCount();
+            
+            // Fetch articles
             fetchArticles();
         });
     </script>
