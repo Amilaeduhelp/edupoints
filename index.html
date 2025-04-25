@@ -320,11 +320,13 @@
             transform: translateX(-50%) translateY(10px);
         }
 
-        /* Mobile responsive design */
+        /* Mobile responsive design - FIXED */
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
                 padding: 15px;
+                width: auto;
+                box-sizing: border-box;
             }
             
             h1 {
@@ -350,12 +352,15 @@
             .filter-bar {
                 flex-direction: column;
                 gap: 10px;
+                align-items: stretch;
             }
             
             .filter-bar select, 
             .filter-bar input[type="text"] {
                 width: 100%;
                 min-width: auto;
+                box-sizing: border-box;
+                margin: 0;
             }
             
             .article-item {
@@ -366,18 +371,53 @@
                 font-size: 1.2rem;
             }
             
-            .actions {
+            .article-item .actions {
                 flex-direction: column;
+                gap: 10px;
+            }
+            
+            .actions button, 
+            .actions a {
+                width: 100%;
+                box-sizing: border-box;
+                text-align: center;
+                justify-content: center;
+            }
+            
+            /* Fix ad bar and bottom bar for mobile */
+            .ad-bar {
+                padding: 5px;
+            }
+            
+            .ad-bar img {
+                max-width: 90%;
             }
         }
         
         @media (max-width: 480px) {
+            .container {
+                margin: 5px;
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 0.9rem;
+            }
+            
             .stat-value {
                 font-size: 1.5rem;
             }
             
             .stat-label {
                 font-size: 0.6rem;
+            }
+            
+            .article-item {
+                padding: 12px;
             }
         }
     </style>
