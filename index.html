@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edu Points</title>
     <style>
+        :root {
+            --primary-color: #2e8b57;
+            --secondary-color: #3a9c69;
+            --accent-color: #5cb85c;
+            --background-color: #f0fff0;
+            --card-bg: #fff;
+            --text-color: #333;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 25px rgba(46, 139, 87, 0.15);
+            /* Add missing navigation variables */
+            --nav-bg: #ffffff;
+            --nav-text-color: #333333;
+            --nav-hover-bg: #f0f0f0;
+            --nav-hover-text: #000000;
+            --nav-gap: 20px;
+        }
+
         /* --- Navigation Tabs Styling (Now at the top) --- */
         .main-nav {
             background-color: var(--nav-bg); /* Use white background variable */
@@ -55,16 +72,6 @@
             display: block;
             object-fit: cover;
             margin-top: var(--nav-gap); /* Add margin-top for the gap */
-        }	
-        :root {
-            --primary-color: #2e8b57;
-            --secondary-color: #3a9c69;
-            --accent-color: #5cb85c;
-            --background-color: #f0fff0;
-            --card-bg: #fff;
-            --text-color: #333;
-            --border-radius: 12px;
-            --box-shadow: 0 10px 25px rgba(46, 139, 87, 0.15);
         }
 
         body {
@@ -491,7 +498,7 @@
 
         <img src="https://www.eduhelp.lk/wp-content/uploads/2025/03/Our-ad-01a.gif" alt="EduHelp Banner Ad" class="banner-image">
     </header>
-<body>
+
     <div id="toast" class="toast">Link එක පිටපත් කරන ලදී!</div>
     
     <div class="container">
@@ -529,9 +536,9 @@
                 <option value="සන්නිවේදනය හා මාධ්‍ය අධ්‍ය්‍යනය">සන්නිවේදනය හා මාධ්‍ය අධ්‍ය්‍යනය</option>
                 <option value="තොරතුරු හා සන්නිවේදන තාක්ෂණය">තොරතුරු හා සන්නිවේදන තාක්ෂණය</option>
                 <option value="තාක්ෂණවේදය">තාක්ෂණවේදය</option>
-				<option value="චිත්‍ර කලාව">චිත්‍ර කලාව</option>
-				<option value="නර්තනය">නර්තනය</option>
-				<option value="සංගීතය">සංගීතය</option>
+                <option value="චිත්‍ර කලාව">චිත්‍ර කලාව</option>
+                <option value="නර්තනය">නර්තනය</option>
+                <option value="සංගීතය">සංගීතය</option>
             </select>
         </div>
         <ul class="article-list">
@@ -548,6 +555,26 @@
     </div>
 
     <script>
+        // Define copyLink function in global scope first
+        function copyLink(link) {
+            navigator.clipboard.writeText(link).then(() => {
+                showToast('Link එක පිටපත් කරන ලදී!');
+            }).catch(err => {
+                console.error('පිටපත් කිරීම අසාර්ථක විය: ', err);
+                // Fallback for browsers that don't support clipboard API
+                const tempInput = document.createElement('input');
+                document.body.appendChild(tempInput);
+                tempInput.value = link;
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast('Link එක පිටපත් කරන ලදී!');
+            });
+        }
+
+        // Make copyLink function available globally
+        window.copyLink = copyLink;
+        
         const articleList = document.querySelector('.article-list');
         const searchInput = document.getElementById('search-input');
         const subjectFilter = document.getElementById('subject-filter');
@@ -663,7 +690,6 @@
             animateCount(articleCountElement, 0, articleCount, 1000);
             animateCount(subjectCountElement, 0, subjectCount, 1000);
         }
-
         // Display articles in the UI
         function displayArticles(articles) {
             articleList.innerHTML = '';
